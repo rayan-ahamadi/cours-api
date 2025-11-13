@@ -1,11 +1,11 @@
-import bcrypt from "bcrypt";
-import { prisma } from "../../prisma.js";
-import {
+const bcrypt = require("bcrypt");
+const { prisma } = require("#prismaORM/prisma.js");
+const {
   generateAccessToken,
   generateRefreshToken,
-} from "@helpers/jwtHelper.js";
+} = require("#helpers/jwtHelper.js");
 
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   const userData = req.body;
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   try {
@@ -24,7 +24,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -48,7 +48,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const getUsers = async (req, res) => {
+const getUsers = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const page = parseInt(req.query.page) || 1;
   const skip = (page - 1) * limit;
@@ -75,4 +75,10 @@ export const getUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  registerUser,
+  login,
+  getUsers,
 };

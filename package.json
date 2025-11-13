@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "type": "module",
+  "type": "commonjs",
   "imports": {
-    "@entities/*": "./entities/*",
-    "@helpers/*": "./helpers/*",
-    "@middlewares/*": "./middlewares/*",
-    "@uploads/*": "./uploads/*",
-    "@configs/*": "./configs/*",
-    "@prismaORM/*": "./db/prisma/*"
+    "#entities/*": "./entities/*",
+    "#helpers/*": "./helpers/*",
+    "#middlewares/*": "./middlewares/*",
+    "#uploads/*": "./uploads/*",
+    "#configs/*": "./configs/*",
+    "#prismaORM/*": "./db/*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/rayan-ahamadi/cours-api#readme",
   "dependencies": {
-    "@prisma/client": "^6.18.0",
+    "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -38,6 +38,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
-    "prisma": "^6.18.0"
+    "prisma": "^6.19.0"
   }
 }

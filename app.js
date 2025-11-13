@@ -1,8 +1,8 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import userRouter from "@entities/user/user.routes.js";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const userRouter = require("./entities/user/user.routes.js");
 
 //dotenv.config(); // Charger les variables d'environnement
 
