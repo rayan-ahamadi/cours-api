@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-const userRouter = require("./entities/user/user.routes.js");
+const userRouter = require("#entities/user/user.routes.js");
 
 //dotenv.config(); // Charger les variables d'environnement
 
@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/api", (req, res) => {
-  res.send("");
+  res.send("lol");
 });
 
 app.use("/api/user", userRouter);

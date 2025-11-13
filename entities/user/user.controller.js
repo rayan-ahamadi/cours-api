@@ -16,8 +16,8 @@ const registerUser = async (req, res) => {
       },
     });
 
-    res.cookies.set("accessToken", generateAccessToken(user));
-    res.cookies.set("refreshToken", generateRefreshToken(user));
+    res.cookie("accessToken", generateAccessToken(user));
+    res.cookie("refreshToken", generateRefreshToken(user));
     res.status(201).json(user);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -40,8 +40,8 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.cookies.set("accessToken", generateAccessToken(user));
-    res.cookies.set("refreshToken", generateRefreshToken(user));
+    res.cookie("accessToken", generateAccessToken(user));
+    res.cookie("refreshToken", generateRefreshToken(user));
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
