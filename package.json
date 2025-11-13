@@ -4,6 +4,14 @@
   "description": "",
   "main": "app.js",
   "type": "module",
+  "imports": {
+    "@entities/*": "./entities/*",
+    "@helpers/*": "./helpers/*",
+    "@middlewares/*": "./middlewares/*",
+    "@uploads/*": "./uploads/*",
+    "@configs/*": "./configs/*",
+    "@prismaORM/*": "./db/prisma/*"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js"
@@ -25,7 +33,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
