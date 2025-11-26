@@ -4,7 +4,7 @@ const {
   getUsers,
 } = require("#controller/user.controller.js");
 const express = require("express");
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 
 const Router = express.Router();
 
@@ -21,6 +21,7 @@ Router.post(
   ],
   registerUser
 );
+
 Router.post(
   "/login",
   [

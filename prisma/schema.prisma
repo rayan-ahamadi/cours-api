@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -18,7 +18,7 @@ model User {
   username  String   @unique
   email     String   @unique
   password  String
-  role     Role     @default(USER)
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   ratings   Rating[]
 }
@@ -29,17 +29,34 @@ enum Role {
 }
 
 model Title {
-  id            Int       @id @default(autoincrement())
-  imdbId        String    @unique
-  name          String
-  type          TitleType
-  releaseYear   Int
-  genres        String[]
-  averageRating Float     @default(0)
-  voteCount     Int       @default(0)
-  externalId    String?   // nullable
-  createdAt     DateTime  @default(now())
-  ratings       Rating[]
+  id              Int       @id @default(autoincrement())
+  imdbId          String    @unique
+  title           String
+  year            String
+  rated           String
+  released        String
+  runtime         String
+  genres          String[]
+  director        String
+  writer          String
+  actors          String
+  plot            String
+  language        String
+  country         String
+  awards          String
+  poster          String
+  externalRatings Json
+  metascore       String
+  imdbRating      Float?
+  imdbVotes       String
+  type            TitleType
+  dvd             String
+  boxOffice       String
+  production      String
+  website         String
+  response        String
+  createdAt       DateTime  @default(now())
+  ratings         Rating[]
 }
 
 model Rating {
