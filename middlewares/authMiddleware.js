@@ -1,7 +1,8 @@
 const { jwt } = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
-    const token = req.cookies.accessToken;
+    // Récupérer le Token depuis les cookies ou les en-têtes Authorization
+    const token = req.cookies.accessToken || req.headers.authorization?.split(' ')[1];
     const refreshToken = req.cookies.refreshToken;
 
     // Si le Token n'est pas présent dans la requête
@@ -9,7 +10,6 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).json({ message: 'Access token missing' });
     }
 
-    // Vérification du Token
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded; // Attacher les informations de l'utilisateur à la requête
@@ -19,8 +19,10 @@ const authMiddleware = (req, res, next) => {
             // Vérification du Refresh Token
             try {
                 const decodedRefresh = jwt.verify(refreshToken, process.env.JWT_SECRET);
-                req.user = decodedRefresh;
+
+                // Si le Refresh Token est valide, générer un nouveau Access Token 
                 const newAccessToken = generateAccessToken(decodedRefresh);
+                req.user = jwt.verify(newAccessToken, process.env.JWT_SECRET);
                 res.cookie('accessToken', newAccessToken);
                 next();
             } catch (refreshErr) {
