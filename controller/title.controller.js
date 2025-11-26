@@ -5,9 +5,9 @@ const getTitlesByName = async (req, res) => {
 
     try {
         // Rechercher les titres en base de données
-        const titleResults = await prisma.title.findMany({
+        let titleResults = await prisma.title.findMany({
             where: {
-                name: {
+                title: {
                     contains: name,
                     mode: 'insensitive',
                 },
@@ -29,7 +29,7 @@ const getTitlesByName = async (req, res) => {
                     data: {
                         title: item.Title,
                         year: item.Year,
-                        imdbID: item.imdbID,
+                        imdbId: item.imdbID,
                         type: item.Type,
                         poster: item.Poster,
                     },
@@ -53,7 +53,7 @@ const getTitlesByName = async (req, res) => {
 const getTitleByImdbID = async (req, res) => {
     const { imdbID } = req.params;
     try {
-        const title = await prisma.title.findUnique({
+        let title = await prisma.title.findUnique({
             where: { imdbID },
         });
 

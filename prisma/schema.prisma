@@ -33,29 +33,29 @@ model Title {
   imdbId          String    @unique
   title           String
   year            String
-  rated           String
-  released        String
-  runtime         String
+  rated           String?
+  released        String?
+  runtime         String?
   genres          String[]
-  director        String
-  writer          String
-  actors          String
-  plot            String
-  language        String
-  country         String
-  awards          String
+  director        String?
+  writer          String?
+  actors          String?
+  plot            String?
+  language        String?
+  country         String?
+  awards          String?
   poster          String
-  externalRatings Json
-  metascore       String
+  externalRatings Json?
+  metascore       String?
   imdbRating      Float?
-  imdbVotes       String
+  imdbVotes       String?
   type            TitleType
-  dvd             String
-  boxOffice       String
-  production      String
-  website         String
-  response        String
-  createdAt       DateTime  @default(now())
+  dvd             String?
+  boxOffice       String?
+  production      String?
+  website         String?
+  response        String?
+  createdAt       DateTime?  @default(now())
   ratings         Rating[]
 }
 
