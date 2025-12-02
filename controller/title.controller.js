@@ -1,95 +1,91 @@
 const { prisma } = require("#prismaORM/prisma.js");
+const { normalizeOmdbData } = require("#helpers/omdbHelper.js");
+const {
+  getOmdbDataByID,
+  getOmdbDataBySearch,
+} = require("#service/omdb.service.js");
+const { trace } = require("#routes/v1/index.js");
 
 const getTitlesByName = async (req, res) => {
-    const { name } = req.params;
+  const { name } = req.params;
+  try {
+    // Interroger l'API OMDB pour les titres correspondant au nom
+    const omdbResponse = await getOmdbDataBySearch(name);
+    let titles = [];
 
-    try {
-        // Rechercher les titres en base de données
-        let titleResults = await prisma.title.findMany({
-            where: {
-                title: {
-                    contains: name,
-                    mode: 'insensitive',
-                },
-            },
+    // return res.status(200).json(normalizeOmdbData(omdbResponse.Search[0]));
+
+    if (omdbResponse.Response == "True") {
+      // Normaliser et enregistrer chaque titre en base de données
+      omdbResponse.Search.forEach(async (item) => {
+        const normalizedData = normalizeOmdbData(item);
+        titles.push(normalizedData);
+
+        // Enregistrer chaque titre en base de données s'il n'existe pas déjà
+        await prisma.title.upsert({
+          where: { imdbID: normalizedData.imdbID },
+          update: { ...normalizedData },
+          create: { ...normalizedData },
         });
+      });
 
-        // Si aucun titre n'est trouvé en base, interroger l'API OMDB
-        if (titleResults.length === 0) {
-            const omdbReponse = await fetch(`http://www.omdbapi.com/?s=${encodeURIComponent(name)}&apikey=${process.env.OMDB_API_KEY}`);
-            const omdbData = await omdbReponse.json();
-
-            if (omdbData.Response === 'False') {
-                return res.status(404).json({ message: 'No titles found' });
-            }
-
-            // Enregistrer les résultats dans la base de données 
-            omdbData.Search.forEach(async (item) => {
-                await prisma.title.create({
-                    data: {
-                        title: item.Title,
-                        year: item.Year,
-                        imdbId: item.imdbID,
-                        type: item.Type,
-                        poster: item.Poster,
-                    },
-                });
-            });
-
-            // Utiliser les résultats de l'API OMDB pour la réponse
-            titleResults = omdbData.Search;
-        }
-
-        res.status(200).json({
-            "titleResults": titleResults,
-            "totalResults": titleResults.length
-        }
-        );
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+      return res.status(200).json({
+        titles: titles,
+        totalResults: titles.length,
+      });
+    } else {
+      return res.status(404).json({ message: "No titles found" });
     }
+  } catch (error) {
+    return res.status(500).json({ message: error.message, trace: error.stack });
+  }
 };
 
 const getTitleByImdbID = async (req, res) => {
-    const { imdbID } = req.params;
-    try {
-        let title = await prisma.title.findUnique({
-            where: { imdbID },
-        });
+  const { imdbID } = req.params;
+  try {
+    // Rechercher le titre en base de données
+    let title = await prisma.title.findUnique({
+      where: { imdbID },
+    });
 
-        const omdbReponse = await fetch(`http://www.omdbapi.com/?i=${encodeURIComponent(imdbID)}&apikey=${process.env.OMDB_API_KEY}`);
-        const omdbData = await omdbReponse.json();
+    if (title && !title.dataCompleted) {
+      // Si le titre existe mais les données ne sont pas complètes, interroger l'API OMDB
+      const omdbResponse = await getOmdbDataByID(imdbID);
+      const normalizedData = normalizeOmdbData(omdbResponse);
 
-        if (omdbData.Response === 'False') {
-            return res.status(404).json({ message: 'Title not found' });
-        }
+      // Mettre à jour le titre en base de données avec les données complètes
+      title = await prisma.title.update({
+        where: { imdbID },
+        data: {
+          ...normalizedData,
+          dataCompleted: true,
+        },
+      });
+    } else if (!title) {
+      // Si le titre n'existe pas en base, interroger l'API OMDB
+      const omdbResponse = await getOmdbDataByID(imdbID);
+      const normalizedData = normalizeOmdbData(omdbResponse);
 
-        if (!title) {
-            // Si le titre n'existe pas en base, le récupérer depuis l'API OMDB
-            const newTitle = await prisma.title.create({
-                data: {
-                    ...omdbData,
-                },
-            });
+      if (omdbResponse.Response === "False") {
+        return res.status(404).json({ message: "Title not found" });
+      }
 
-            title = newTitle;
-        } else {
-            // Mettre à jour les informations du titre existant avec les données de l'API OMDB
-            const updatedTitle = await prisma.title.update({
-                where: { imdbID },
-                data: {
-                    ...omdbData,
-                },
-            });
-            title = updatedTitle;
-        }
-        res.status(200).json(title);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+      //Enregistrer le nouveau titre en base de données
+      title = await prisma.title.create({
+        data: {
+          ...normalizedData,
+        },
+      });
     }
+
+    res.status(200).json(title);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {
-    getTitlesByName,
-    getTitleByImdbID,
+  getTitlesByName,
+  getTitleByImdbID,
 };

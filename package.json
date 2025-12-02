@@ -6,6 +6,7 @@
   "type": "commonjs",
   "imports": {
     "#controller/*": "./controller/*",
+    "#service/*": "./service/*",
     "#helpers/*": "./helpers/*",
     "#middlewares/*": "./middlewares/*",
     "#uploads/*": "./uploads/*",

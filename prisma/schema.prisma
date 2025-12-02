@@ -30,13 +30,13 @@ enum Role {
 
 model Title {
   id              Int       @id @default(autoincrement())
-  imdbId          String    @unique
+  imdbID          String    @unique
   title           String
   year            String
   rated           String?
   released        String?
   runtime         String?
-  genres          String[]
+  genre           String?
   director        String?
   writer          String?
   actors          String?
@@ -44,10 +44,10 @@ model Title {
   language        String?
   country         String?
   awards          String?
-  poster          String
+  poster          String?
   externalRatings Json?
   metascore       String?
-  imdbRating      Float?
+  imdbRating      String?
   imdbVotes       String?
   type            TitleType
   dvd             String?
@@ -56,7 +56,9 @@ model Title {
   website         String?
   response        String?
   createdAt       DateTime?  @default(now())
-  ratings         Rating[]
+  dataCompleted  Boolean   @default(false)
+  updatedAt       DateTime   @updatedAt
+  ratings         Rating[]   
 }
 
 model Rating {
