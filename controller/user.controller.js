@@ -5,7 +5,6 @@ const {
   generateRefreshToken,
 } = require("#helpers/jwtHelper.js");
 
-
 const registerUser = async (req, res) => {
   const userData = req.body;
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -79,7 +78,7 @@ const getUsers = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const userId = parseInt(req.params.user.id) // Récupère depuis le middleware authMiddleware
+  const userId = parseInt(req.params.user.id); // Récupère depuis le middleware authMiddleware
   const updateData = req.body;
   try {
     const updatedUser = await prisma.user.update({
@@ -93,7 +92,7 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const userId = parseInt(req.params.user.id) // Récupère depuis le middleware authMiddleware
+  const userId = parseInt(req.params.user.id); // Récupère depuis le middleware authMiddleware
   try {
     await prisma.user.delete({
       where: { id: userId },
@@ -103,7 +102,6 @@ const deleteUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 module.exports = {
   registerUser,
