@@ -16,9 +16,12 @@ const registerUser = async (req, res) => {
       },
     });
 
-    res.cookie("accessToken", generateAccessToken(user));
-    res.cookie("refreshToken", generateRefreshToken(user));
-    res.status(201).json(user);
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    res.cookie("accessToken", accessToken);
+    res.cookie("refreshToken", refreshToken);
+    res.status(201).json({ token: accessToken, user: user });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -40,8 +43,12 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.cookie("accessToken", generateAccessToken(user));
-    res.cookie("refreshToken", generateRefreshToken(user));
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    res.cookie("accessToken", accessToken);
+    res.cookie("refreshToken", refreshToken);
+    res.status(201).json({ token: accessToken });
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });

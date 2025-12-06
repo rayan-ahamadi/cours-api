@@ -68,7 +68,7 @@ model Rating {
   title     Title    @relation(fields: [titleId], references: [id])
   titleId   Int
   comment   String
-  rating    Int
+  rating    Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

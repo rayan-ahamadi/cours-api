@@ -11,7 +11,6 @@ const getTitlesByName = async (req, res) => {
   try {
     // Interroger l'API OMDB pour les titres correspondant au nom
     const omdbResponse = await getOmdbDataBySearch(name);
-    let titles = [];
 
     // return res.status(200).json(normalizeOmdbData(omdbResponse.Search[0]));
 
@@ -19,7 +18,6 @@ const getTitlesByName = async (req, res) => {
       // Normaliser et enregistrer chaque titre en base de données
       omdbResponse.Search.forEach(async (item) => {
         const normalizedData = normalizeOmdbData(item);
-        titles.push(normalizedData);
 
         // Enregistrer chaque titre en base de données s'il n'existe pas déjà
         await prisma.title.upsert({
@@ -27,6 +25,16 @@ const getTitlesByName = async (req, res) => {
           update: { ...normalizedData },
           create: { ...normalizedData },
         });
+      });
+
+      // Récupérer les titres enregistrés en base de données
+      const titles = await prisma.title.findMany({
+        where: {
+          title: {
+            contains: name,
+            mode: "insensitive",
+          },
+        },
       });
 
       return res.status(200).json({
