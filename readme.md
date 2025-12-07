@@ -221,7 +221,3 @@ cours-api/
 ## 👤 Auteur
 
 Rayan Ahamadi
-
-## 📄 Licence
-
-ISC
